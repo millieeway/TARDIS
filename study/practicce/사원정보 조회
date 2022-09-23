@@ -1,0 +1,175 @@
+package day23_quiz;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import dao.EmpDAO;
+import vo.EmpVO;
+
+public class Quiz03 extends JFrame implements ActionListener {
+	JTextArea jta;
+	JScrollPane jsp;
+	JButton jbtnSearch, jbtnAdd, jbtnUpdate, jbtnDelete;
+	JLabel jlbEmp, jlbEnter, jlbEmpno, jlbEname, jlbSal, jlbDeptno, jlbResult;
+	JTextField jtfEmp, jtfEmpno, jtfEname, jtfSal, jtfDeptno;
+
+	Quiz03() {
+		setLayout(null);
+
+		jta = new JTextArea();
+		jsp = new JScrollPane(jta, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		jbtnSearch = new JButton("사번으로 검색");
+		jbtnAdd = new JButton("추가");
+		jbtnUpdate = new JButton("변경");
+		jbtnDelete = new JButton("삭제");
+
+		jlbEmp = new JLabel("사원정보");
+		jlbEnter = new JLabel("입력");
+		jlbEmpno = new JLabel("사번");
+		jlbEname = new JLabel("이름");
+		jlbSal = new JLabel("급여");
+		jlbDeptno = new JLabel("부서번호");
+		jlbResult = new JLabel("처리결과");
+
+		jtfEmp = new JTextField();
+		jtfEmpno = new JTextField();
+		jtfEname = new JTextField();
+		jtfSal = new JTextField();
+		jtfDeptno = new JTextField();
+
+		jsp.setBounds(100, 140, 600, 200);
+		jbtnSearch.setBounds(220, 90, 130, 30);
+		jbtnAdd.setBounds(220, 480, 80, 40);
+		jbtnUpdate.setBounds(340, 480, 80, 40);
+		jbtnDelete.setBounds(460, 480, 80, 40);
+
+		jlbEmp.setBounds(100, 50, 100, 30);
+		jlbEnter.setBounds(100, 360, 100, 30);
+		jlbEmpno.setBounds(135, 390, 100, 30);
+		jlbEname.setBounds(265, 390, 100, 30);
+		jlbSal.setBounds(395, 390, 100, 30);
+		jlbDeptno.setBounds(510, 390, 100, 30);
+		jlbResult.setBounds(630, 420, 100, 30);
+
+		jtfEmp.setBounds(100, 90, 100, 30);
+		jtfEmpno.setBounds(100, 420, 100, 30);
+		jtfEname.setBounds(230, 420, 100, 30);
+		jtfSal.setBounds(360, 420, 100, 30);
+		jtfDeptno.setBounds(490, 420, 100, 30);
+
+		jbtnSearch.addActionListener(this);
+		jbtnAdd.addActionListener(this);
+		jbtnUpdate.addActionListener(this);
+		jbtnDelete.addActionListener(this);
+
+		add(jsp);
+		add(jbtnSearch);
+		add(jbtnAdd);
+		add(jbtnUpdate);
+		add(jbtnDelete);
+		
+		add(jlbEmp);
+		add(jlbEnter);
+		add(jlbEmpno);
+		add(jlbEname);
+		add(jlbSal);
+		add(jlbDeptno);
+		add(jlbResult);
+		
+		add(jtfEmp);
+		add(jtfEmpno);
+		add(jtfEname);
+		add(jtfSal);
+		add(jtfDeptno);
+
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 600);
+		setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		Quiz03 q3 = new Quiz03();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == jbtnSearch) {
+			int empno = Integer.parseInt(jtfEmp.getText());
+
+			EmpDAO dao = new EmpDAO();
+			EmpVO vo = dao.selectOne(empno);
+
+			dao.close();
+
+			jta.setText("사원번호\t사원명\t급여\t부서번호\n");
+			jta.append("------------------------------------------------------------------------------\n");
+			jta.append(empno + "\t" + vo.getEname() + "\t" + vo.getSal() + "\t" + vo.getDeptno());
+
+			jlbResult.setText("조회완료");
+
+		} else if (e.getSource() == jbtnAdd) {
+			jta.setText("");
+			
+			int empno = Integer.parseInt(jtfEmpno.getText());
+			String ename = jtfEname.getText();
+			int sal = Integer.parseInt(jtfSal.getText());
+			int deptno = Integer.parseInt(jtfDeptno.getText());
+
+			EmpDAO dao = new EmpDAO();
+			EmpVO vo = new EmpVO();
+
+			vo.setEmpno(empno);
+			vo.setEname(ename);
+			vo.setSal(sal);
+			vo.setDeptno(deptno);
+
+			dao.insertOne(vo);
+			dao.close();
+
+			jlbResult.setText("추가완료");
+
+		} else if (e.getSource() == jbtnUpdate) {
+			jta.setText("");
+			
+			int empno = Integer.parseInt(jtfEmpno.getText());
+			String ename = jtfEname.getText();
+			int sal = Integer.parseInt(jtfSal.getText());
+			int deptno = Integer.parseInt(jtfDeptno.getText());
+
+			EmpDAO dao = new EmpDAO();
+			EmpVO vo = new EmpVO();
+
+			vo.setEmpno(empno);
+			vo.setEname(ename);
+			vo.setSal(sal);
+			vo.setDeptno(deptno);
+
+			dao.updateOne(vo);
+			dao.close();
+
+			jlbResult.setText("변경완료");
+
+		} else if (e.getSource() == jbtnDelete) {
+			jta.setText("");
+			
+			int empno = Integer.parseInt(jtfEmpno.getText());
+
+			EmpDAO dao = new EmpDAO();
+			dao.deleteOne(empno);
+			dao.close();
+
+			jlbResult.setText("삭제완료");
+		}
+
+	}
+}
